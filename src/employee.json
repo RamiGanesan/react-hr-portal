@@ -1,0 +1,16 @@
+{
+"employees" : [
+    { "name": "John", "department": "HR", "email": "john@example.com"},
+    { "name": "Jane", "department": "IT", "email": "jane@example.com"},
+    { "name": "Bob", "department": "Finance", "email": "bob@example.com"},
+    { "name": "Alice", "department": "HR", "email": "alice@example.com"},
+    { "name": "Charlie", "department": "IT", "email": "charlie@example.com"},
+    { "name": "Dave", "department": "Finance", "email": "dave@example.com"},
+    { "name": "Eve", "department": "HR", "email": "eve@example.com"},
+    { "name": "Frank", "department": "IT", "email": "frank@example.com"},
+    { "name": "Grace", "department": "Finance", "email": "grace@example.com"},
+    { "name": "Hank", "department": "HR", "email": "hank@example.com"},
+    { "name": "Ivy", "department": "IT", "email": "ivy@example.com"},
+    { "name": "Jack", "department": "Finance", "email": "jack@example.com"}   
+  ]
+}

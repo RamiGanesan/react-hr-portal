@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import bgimg from  './images/background.jpg'
+
 const LoginScreen = () => {
   const [role, setRole] = useState("employee");
   const [username, setUsername] = useState("");
@@ -8,6 +10,12 @@ const LoginScreen = () => {
   const [errors2, setErrors2] = useState('');
 
   const navigate = useNavigate();
+  const backgroundStyle = {
+    backgroundImage: `url(${bgimg})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    minHeight: '100vh',
+  };
 
   const validate = () => {
     const newErrors = { username: "", password: "" };
@@ -41,13 +49,8 @@ const LoginScreen = () => {
         if(role === "hr"){
         navigate("/hrdashboard");
         }
-        else if(role === "employee"){
+        else {
           navigate("/employeedashboard");
-        }
-        else if(role === "admin"){
-          navigate("/admindashboard");
-        }else{
-          setErrors2("Select your role");
         }
         }, 2000);
     } else{
@@ -58,13 +61,11 @@ const LoginScreen = () => {
   return (
     <div
       className="d-flex align-items-center justify-content-center min-vh-100 bg-light"
-      style={{
-        backgroundImage: "url(/your-background-image.jpg)",
-        backgroundSize: "cover",
-      }}
+      style={backgroundStyle}
+
     >
       <div
-        className="bg-white bg-opacity-75 p-4 rounded-4 shadow"
+        className="bg-white p-4 rounded-4 shadow"
         style={{ width: "100%", maxWidth: "400px" }}
       >
         <h2 className="text-center mb-4">Login</h2>
@@ -96,18 +97,7 @@ const LoginScreen = () => {
             )}
           </div>
 
-          <div className="mb-3 d-flex gap-3 justify-content-center">
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="role"
-                value="admin"
-                checked={role === "admin"}
-                onChange={() => setRole("admin")}
-              />
-              <label className="form-check-label">Admin</label>
-            </div>
+          <div className="mb-3 d-flex gap-3 justify-content-center">           
             <div className="form-check">
               <input
                 className="form-check-input"

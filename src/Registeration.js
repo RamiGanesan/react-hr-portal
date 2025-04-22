@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import bgimg from  './images/background.jpg'
 
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ username: "", email: "", password: "" });
-
+  const backgroundStyle = {
+    backgroundImage: `url(${bgimg})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    minHeight: '100vh',
+  };
   const validate = () => {
     const newErrors = { username: "", email: "", password: "" };
     let valid = true;
@@ -44,8 +50,9 @@ const Signup = () => {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light" style={{ backgroundImage: 'url(/your-background-image.jpg)', backgroundSize: 'cover' }}>
-      <div className="bg-white bg-opacity-75 p-4 rounded-4 shadow" style={{ width: '100%', maxWidth: '400px' }}>
+    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light" style={backgroundStyle}
+>
+      <div className="bg-white  p-4 rounded-4 shadow" style={{ width: '100%', maxWidth: '400px' }}>
         <h2 className="text-center mb-4">Sign Up</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
