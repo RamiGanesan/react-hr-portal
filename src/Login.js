@@ -1,20 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import bgimg from  './images/background.jpg'
+import bgimg from "./images/background.jpg";
 
 const LoginScreen = () => {
   const [role, setRole] = useState("employee");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ username: "", password: "" });
-  const [errors2, setErrors2] = useState('');
+  const [errors2, setErrors2] = useState("");
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    setUsers(storedUsers);
+  }, []);
   const navigate = useNavigate();
   const backgroundStyle = {
     backgroundImage: `url(${bgimg})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    minHeight: '100vh',
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    minHeight: "100vh",
   };
 
   const validate = () => {
@@ -37,24 +43,37 @@ const LoginScreen = () => {
     setErrors(newErrors);
     return valid;
   };
-
+  // Function to check if a username exists
+  const matchedUser = users.find(
+    (user) =>
+      user.userName.toLowerCase() === username.toLowerCase() &&
+      user.password === password &&
+      user.role === role
+  );
   const handleSubmit = (e) => {
     e.preventDefault();
- validate();
-    const getUsername = localStorage.getItem("username");
-    const getPassword = localStorage.getItem("password");
-    if (username === getUsername && password === getPassword ) {
+    validate();
+
+    if (matchedUser) {
+      setLoading(true); // Show spinner
+
       localStorage.setItem("isAuthenticated", "true");
       setTimeout(() => {
-        if(role === "hr"){
-        navigate("/hrdashboard");
-        }
-        else {
+        setLoading(false); // Hide spinner before navigation (optional)
+
+        if (role === "hr") {
+          navigate("/hrdashboard");
+        } else {
+          localStorage.setItem(
+            "loggedInEmployee",
+            JSON.stringify(users.find((user) => user.userName === username))
+          );
+
           navigate("/employeedashboard");
         }
-        }, 2000);
-    } else{
-      setErrors2("Invalid username or password");
+      }, 2000);
+    } else {
+      setErrors2("Invalid username or password or role");
     }
   };
 
@@ -62,8 +81,18 @@ const LoginScreen = () => {
     <div
       className="d-flex align-items-center justify-content-center min-vh-100 bg-light"
       style={backgroundStyle}
-
     >
+      {loading && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+          style={{ backgroundColor: "rgba(255,255,255,0.7)", zIndex: 1050 }}
+        >
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      )}
+
       <div
         className="bg-white p-4 rounded-4 shadow"
         style={{ width: "100%", maxWidth: "400px" }}
@@ -97,7 +126,7 @@ const LoginScreen = () => {
             )}
           </div>
 
-          <div className="mb-3 d-flex gap-3 justify-content-center">           
+          <div className="mb-3 d-flex gap-3 justify-content-center">
             <div className="form-check">
               <input
                 className="form-check-input"
