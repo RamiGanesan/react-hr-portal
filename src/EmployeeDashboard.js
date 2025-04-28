@@ -6,7 +6,9 @@ const EmployeeDashboard = () => {
   const [employee, setEmployee] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const [showDetailsCard, setShowDetailsCard] = useState(false);
+  const [showLeaveStatusCard, setShowLeaveStatusCard] = useState(false);
+  
   // Fetch employee data from localStorage on component mount
   useEffect(() => {
     const loggedInEmployee = JSON.parse(
@@ -23,16 +25,15 @@ const EmployeeDashboard = () => {
   };
 
   const handleViewDetails = () => {
-    if (employee) {
-      alert(
-        `User Details:\nName: ${employee.userName}\nPosition: ${employee.email}`
-      );
-    }
+    setShowDetailsCard(true);
+    setShowLeaveStatusCard(false); // Hide leave status card if showing
   };
-
+  
   const handleViewLeaveStatus = () => {
-    alert("Leave Status:\nYou have 5 leave days remaining.");
+    setShowLeaveStatusCard(true);
+    setShowDetailsCard(false); // Hide details card if showing
   };
+  
 
   const handleApplyLeave = () => {
     const newErrors = {};
@@ -46,6 +47,7 @@ const EmployeeDashboard = () => {
         userName: employee.userName,
         reason: reason,
         date: new Date().toLocaleDateString(),
+        status: "pending",
       };
 
       // Get existing leave requests from localStorage
@@ -148,6 +150,41 @@ const EmployeeDashboard = () => {
             </div>
           </div>
         </div>
+        <div className="row justify-content-center mt-4">
+  {/* Show User Details Card */}
+  {showDetailsCard && (
+    <div className="col-md-4">
+      <div className="card p-3 shadow" style={cardStyle}>
+        <h5 className="card-title text-center">User Details</h5>
+        <p><strong>Name:</strong> {employee.userName}</p>
+        <p><strong>Email:</strong> {employee.email}</p>
+        <button
+          className="btn btn-secondary mt-2 w-100"
+          onClick={() => setShowDetailsCard(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )}
+
+  {/* Show Leave Status Card */}
+  {showLeaveStatusCard && (
+    <div className="col-md-4">
+      <div className="card p-3 shadow" style={cardStyle}>
+        <h5 className="card-title text-center">Leave Status</h5>
+        <p>You have 5 leave days remaining.</p>
+        <button
+          className="btn btn-secondary mt-2 w-100"
+          onClick={() => setShowLeaveStatusCard(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+
         {/* Toast Notification */}
         {showToast && (
           <div

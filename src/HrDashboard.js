@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import bgimg from "./images/bg1.jpg";
 import { useNavigate } from "react-router-dom";
 
@@ -6,7 +6,7 @@ const HRDashboard = () => {
   const [employees, setEmployees] = useState([]);
   const navigate = useNavigate();
   const [leaveRequests, setLeaveRequests] = useState([]);
-  // Load employees when component mounts
+  const leaveTableRef = useRef(null);
   useEffect(() => {
     const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
     setEmployees(storedEmployees);
@@ -24,6 +24,18 @@ const HRDashboard = () => {
   const handleAddEmployee = () => {
     navigate("/hrdashboard/employeeSignup");
   };
+  const handleLeaveAction = (index, newStatus) => {
+    const updatedRequests = [...leaveRequests];
+    updatedRequests[index].status = newStatus;
+    setLeaveRequests(updatedRequests);
+    localStorage.setItem("leaveRequests", JSON.stringify(updatedRequests));
+  };
+  const handleDeleteLeave = (index) => {
+    const updatedRequests = leaveRequests.filter((_, i) => i !== index);
+    setLeaveRequests(updatedRequests);
+    localStorage.setItem("leaveRequests", JSON.stringify(updatedRequests));
+  };
+  
   return (
     <div className="text-center p-4" style={backgroundStyle}>
       {" "}
@@ -51,34 +63,65 @@ const HRDashboard = () => {
               </h5>
               <p className="card-text mb-2">{emp.position}</p>
               <p className="card-text">Email: {emp.email}</p>
-              <button className="btn btn-primary">Manage Leave</button>
+              <button className="btn btn-primary" onClick={() => leaveTableRef.current.scrollIntoView({ behavior: "smooth" })}>
+  Manage Leave
+</button>
             </div>
           </div>
         ))}
       </div>
-      <div className="card container mt-4">
+      <div className="card container mt-4" ref={leaveTableRef}>
         <div className="card-body">
           <h5 className="card-title text-center">All Leave Requests</h5>
 
           <table className="table table-bordered">
-            <thead className="table-light">
-              <tr>
-                <th>#</th>
-                <th>Employee Name</th>
-                <th>Reason</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leaveRequests.map((req, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{req.userName}</td>
-                  <td>{req.reason}</td>
-                  <td>{req.date}</td>
-                </tr>
-              ))}
-            </tbody>
+          <thead className="table-light">
+  <tr>
+    <th>#</th>
+    <th>Employee Name</th>
+    <th>Reason</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+<tbody>
+  {leaveRequests.map((req, index) => (
+    <tr key={index}>
+      <td>{index + 1}</td>
+      <td>{req.userName}</td>
+      <td>{req.reason}</td>
+      <td>{req.date}</td>
+      <td>{req.status || "pending"}</td>
+      <td>
+        {req.status === "pending" && (
+          <>
+            <button
+              className="btn btn-success btn-sm me-2"
+              onClick={() => handleLeaveAction(index, "Approved")}
+            >
+              Approve
+            </button>
+            <button
+              className="btn btn-danger btn-sm me-2"
+              onClick={() => handleLeaveAction(index, "Rejected")}
+            >
+              Reject
+            </button>
+            <button
+  className="btn btn-outline-danger btn-sm"
+  onClick={() => handleDeleteLeave(index)}
+>
+  Delete
+</button>
+
+          </>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
           </table>
         </div>
       </div>
